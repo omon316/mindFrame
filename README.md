@@ -9,6 +9,10 @@ MindFrame ist die Antwort auf dieses Chaos: Ein Rahmen für den Tag, der Struktu
 MindFrame ist nicht nur eine App, sondern eine Geschichte: vom Versuch, das eigene Chaos zu bändigen, hin zum Finden von Klarheit.
 
 
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 
 🚀 MindFrame – Funktionen
