@@ -1,0 +1,265 @@
+/* MindFrame — schlicht, nüchtern, robust */
+:root{
+  --bg:#0b0c0f;
+  --panel:#11131a;
+  --muted:#9aa3b2;
+  --text:#e7edf5;
+  --accent:#6aa0ff;
+  --accent-2:#3c7bff;
+  --danger:#ff5d5d;
+  --warn:#ffc857;
+  --ok:#5ee27d;
+  --stripe-1:#f87171;
+  --stripe-2:#facc15;
+  --stripe-3:#4ade80;
+  /* Slot height: vertical size of a 15-min interval. Increase for better readability */
+  --slot-height:24px;
+  /* Width reserved for time labels in schedule */
+  --time-col-width:48px;
+  /* Background colors for schedule sections – slightly different hues for better distinction */
+  --bg-night: #0f1827;     /* tiefes Nachtblau */
+  --bg-morning: #13223a;   /* dunkles Morgenblau */
+  --bg-midday: #163047;    /* gedämpftes Mittagsblau */
+  --bg-evening: #1a273a;   /* sanftes Abendblau */
+  --radius:14px;
+  --shadow:0 6px 24px rgba(0,0,0,.45);
+  --gap:14px;
+  --border:1px solid rgba(255,255,255,.08);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:linear-gradient(180deg, #0b0c0f, #0c0e13 20%, #0b0c10);
+  color:var(--text);
+  margin:0;
+  font:14px/1.5 system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+}
+
+a{color:var(--accent)}
+a:hover{color:var(--accent-2)}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.app-header{
+  position:sticky; top:0; z-index:1000;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 16px;
+  background:rgba(12,14,19,.85); backdrop-filter: blur(6px);
+  border-bottom:var(--border);
+}
+.brand{display:flex; align-items:center; gap:10px}
+.brand .logo{width:28px; height:28px; display:grid; place-items:center; background:#161a23; border-radius:8px; box-shadow:var(--shadow)}
+.brand h1{margin:0; font-size:18px}
+.subtitle{color:var(--muted); font-size:12px; margin-left:4px}
+
+.exporter select, .exporter button{
+  background:#121621; color:var(--text); border:var(--border);
+  padding:8px 10px; border-radius:10px; margin-left:8px;
+}
+.btn{cursor:pointer}
+.btn-link{background:transparent; border:none; color:var(--accent); cursor:pointer}
+.btn-link.small{font-size:12px}
+.btn:hover{box-shadow:0 0 0 2px rgba(106,160,255,.15) inset}
+
+.app{
+  display:grid;
+  grid-template-columns: 420px 1fr;
+  gap:var(--gap);
+  padding:var(--gap);
+}
+
+.left, .right .panel{
+  background:var(--panel);
+  border:var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+}
+.left{display:flex; flex-direction:column; padding:var(--gap); gap:var(--gap); height: calc(100vh - 96px); overflow:auto}
+.right .panel{padding:var(--gap)}
+
+.panel{padding:var(--gap)}
+.panel-header{display:flex; align-items:center; justify-content:space-between}
+.panel h2{margin:0; font-size:16px}
+.muted{color:var(--muted)}
+
+.capture-list .row{
+  display:flex; gap:8px; align-items:flex-start; margin-bottom:8px;
+}
+.capture-list textarea{
+  flex:1; min-height:52px; resize:vertical;
+  background:#0f1320; color:var(--text); border:var(--border);
+  border-radius:12px; padding:10px;
+}
+.capture-list select, .capture-list .add{
+  background:#0f1320; color:var(--text); border:var(--border);
+  border-radius:12px; padding:10px 12px;
+}
+.capture-list .add{cursor:pointer}
+.hint{color:var(--muted); margin:0; font-size:12px}
+
+.task-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px}
+.task-item{
+  background:#0f1320; border:var(--border); border-left:6px solid var(--stripe-3);
+  border-radius:12px; padding:10px; display:flex; align-items:center; gap:10px;
+}
+.task-item .title{flex:1; word-break:break-word}
+.task-item .tools{display:flex; gap:6px}
+.tool{background:#101426;border:var(--border); color:var(--text); border-radius:10px; padding:6px 8px; cursor:pointer}
+.tool:hover{outline:1px solid rgba(255,255,255,.08)}
+
+.priority-1{border-left-color:var(--stripe-1)!important}
+.priority-2{border-left-color:var(--stripe-2)!important}
+.priority-3{border-left-color:var(--stripe-3)!important}
+
+.delete-zone{
+  position:sticky; bottom:0; text-align:center; padding:12px; border:1px dashed rgba(255,255,255,.2);
+  color:#ffd7d7; background:#1d0f13; border-radius:12px;
+}
+
+.footer-links{display:flex; gap:12px; flex-wrap:wrap; margin-top:auto; padding-top:8px}
+
+.schedule{display:flex; flex-direction:column; gap:10px}
+.schedule-section{background:#0d111b; border:var(--border); border-radius:12px}
+.section-toggle{
+  width:100%; text-align:left; background:transparent; border:none; color:var(--text); padding:12px 14px; cursor:pointer;
+  border-bottom:var(--border);
+}
+.section-toggle[aria-expanded="true"]{background:#0f1524}
+.section-body{
+  position:relative;
+  height: calc(var(--slot-height) * 24); /* 6h = 24 slots */
+  overflow:hidden;
+  background:
+    repeating-linear-gradient(to bottom,
+      rgba(255,255,255,.06) 0,
+      rgba(255,255,255,.06) 1px,
+      transparent 1px,
+      transparent calc(var(--slot-height))
+    ),
+    repeating-linear-gradient(to bottom,
+      rgba(255,255,255,.1) 0,
+      rgba(255,255,255,.1) 2px,
+      transparent 2px,
+      transparent calc(var(--slot-height) * 4)
+    );
+}
+.section-body[hidden]{display:none}
+
+.event-block{
+  position:absolute;
+  /* Reserve space for time labels on the left */
+  left:calc(var(--time-col-width) + 8px);
+  right:8px;
+  min-height: calc(var(--slot-height));
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.15);
+  background:linear-gradient(180deg,#173153,#12213b);
+  color:#e8f1ff;
+  box-shadow:var(--shadow);
+  padding:8px 10px 14px 10px;
+  cursor:grab;
+  z-index:1;
+}
+
+/* Different background hues per priority for event-blocks */
+/* Different background hues per priority for event-blocks */
+.event-block.priority-1{
+  background:linear-gradient(180deg, rgba(120,40,40,0.6), rgba(80,20,20,0.8)); /* red tint */
+}
+.event-block.priority-2{
+  background:linear-gradient(180deg, rgba(120,90,40,0.6), rgba(80,60,20,0.8)); /* amber tint */
+}
+.event-block.priority-3{
+  background:linear-gradient(180deg, rgba(40,100,60,0.6), rgba(20,60,30,0.8)); /* green tint */
+}
+
+/* Slight tint for tasks in lists */
+.task-item.priority-1{background:rgba(120, 40, 40, 0.35);} /* red tint */
+.task-item.priority-2{background:rgba(120, 90, 40, 0.35);} /* amber tint */
+.task-item.priority-3{background:rgba(40, 100, 60, 0.35);} /* green tint */
+
+/* Dragging appearance */
+.drag-active{
+  opacity:0.7;
+  box-shadow:0 0 0 2px rgba(106,160,255,.3);
+}
+
+/* Drop hover highlight */
+.drop-hover{
+  background-color:rgba(106,160,255,.12) !important;
+  border:1px dashed rgba(106,160,255,.5);
+}
+
+/* Schedule section backgrounds */
+#sec-night .section-body{background-color:var(--bg-night);} 
+#sec-morning .section-body{background-color:var(--bg-morning);} 
+#sec-midday .section-body{background-color:var(--bg-midday);} 
+#sec-evening .section-body{background-color:var(--bg-evening);} 
+
+/* Week section placeholder styling */
+#weekSection{
+  min-height:80px;
+  border:1px dashed rgba(255,255,255,.25);
+  border-radius:12px;
+  padding:8px;
+  background:rgba(255,255,255,0.03);
+}
+#weekSection ul:empty::after{
+  content:'(kein Task)';
+  display:block;
+  color:var(--muted);
+  font-style:italic;
+}
+
+/* Prevent text selection during drag */
+.task-item, .event-block, .task-list, .schedule {
+  user-select: none;
+}
+
+/* Prevent accidental horizontal scroll */
+body{overflow-x:hidden;}
+.event-block.drag-active{z-index:1001; outline:2px dashed rgba(255,255,255,.25)}
+.event-title{font-weight:600; margin:0 0 6px 0; font-size:13px}
+.event-meta{color:var(--muted); font-size:12px}
+.resize-handle{position:absolute; height:10px; bottom:0; left:0; right:0; cursor:ns-resize; border-top:1px dashed rgba(255,255,255,.2)}
+
+/* Edit button on event-block */
+.block-edit{
+  position:absolute;
+  top:2px;
+  right:6px;
+  font-size:12px;
+  color:var(--muted);
+  background:rgba(0,0,0,0.3);
+  padding:2px 4px;
+  border-radius:6px;
+  cursor:pointer;
+  z-index:2;
+  transition:background 0.2s, color 0.2s;
+}
+.block-edit:hover{
+  background:rgba(106,160,255,0.25);
+  color:var(--text);
+}
+
+.ghost{
+  position:absolute; pointer-events:none; opacity:.5;
+  border-radius:12px; border:2px dashed rgba(106,160,255,.8);
+  background:rgba(106,160,255,.12);
+  display:none;
+  z-index:1000;
+}
+
+/* Focus states */
+button:focus, .tool:focus, select:focus, textarea:focus{
+  outline:2px solid var(--accent-2);
+  outline-offset:2px;
+  border-color:var(--accent-2);
+}
+
+/* Responsive baseline */
+@media (max-width: 1100px){
+  .app{grid-template-columns: 1fr}
+  .left{height:auto}
+}

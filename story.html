@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Warum MindFrame?</title>
+  <style>
+    :root{
+      --bg:#0b0c10;
+      --panel:#11131a;
+      --text:#e7edf5;
+      --muted:#a4adbb;
+      --accent:#6aa0ff;
+
+      /* Abschnittsfarben */
+      --night:#102238;   /* dunkelblau */
+      --morning:#153457; /* blau */
+      --midday:#3e2a12;  /* orange-braun */
+      --evening:#271a3a; /* violett */
+
+      --chip:#1a2233;
+      --border:1px solid rgba(255,255,255,.08);
+      --radius:16px;
+      --shadow:0 8px 28px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:
+        radial-gradient(1200px 600px at 10% -10%, #111421 0%, transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, #0e1424 0%, transparent 50%),
+        var(--bg);
+      color:var(--text); font:16px/1.6 system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+      padding:28px 18px;
+    }
+    .wrap{
+      max-width:980px; margin:0 auto; display:grid; gap:22px;
+    }
+    .badge{display:inline-block; font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+      color:#b7c7ff; background:#101a2d; padding:6px 10px; border-radius:999px; border:var(--border)}
+    h1{margin:4px 0 8px; font-size:40px; line-height:1.12}
+    .lede{color:var(--muted); margin:0 0 6px}
+    .panel{
+      background:linear-gradient(180deg, #131726, #0f1220 60%, #0d1019);
+      border:var(--border); border-radius:var(--radius); box-shadow:var(--shadow);
+      padding:22px;
+    }
+    .sep{height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent)}
+    .hero p{margin:0 0 10px}
+    .hero strong{color:#dfe8ff}
+    .features{display:grid; gap:18px}
+    .feature{background:var(--panel); border:var(--border); border-radius:14px; padding:18px}
+    .feature h3{margin:0 0 8px; font-size:18px}
+    .feature ul{margin:8px 0 0 18px; padding:0}
+    .feature li{margin:6px 0}
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+    .chip{background:var(--chip); border:var(--border); color:#cbd6ff; padding:6px 10px; border-radius:999px; font-size:12px}
+    .sections{display:grid; gap:14px}
+    .slot{
+      border-radius:12px; border:var(--border); padding:12px 14px; color:#dbe6ff;
+      display:flex; align-items:center; gap:10px;
+    }
+    .dot{width:10px; height:10px; border-radius:50%}
+    .slot.night{background:linear-gradient(180deg, rgba(16,34,56,.7), rgba(16,34,56,.45));}
+    .slot.morning{background:linear-gradient(180deg, rgba(21,52,87,.7), rgba(21,52,87,.45));}
+    .slot.midday{background:linear-gradient(180deg, rgba(62,42,18,.7), rgba(62,42,18,.45));}
+    .slot.evening{background:linear-gradient(180deg, rgba(39,26,58,.7), rgba(39,26,58,.45));}
+    .slot.night .dot{background:var(--night)}
+    .slot.morning .dot{background:var(--morning)}
+    .slot.midday .dot{background:#b97b2d}
+    .slot.evening .dot{background:var(--evening)}
+
+    .export{display:grid; grid-template-columns:1fr; gap:12px}
+    .export .row{display:flex; flex-wrap:wrap; gap:8px}
+    .pill{
+      border-radius:999px; padding:6px 12px; border:var(--border);
+      background:#101726; color:#d8e1ff; font-size:13px
+    }
+
+    .cta{display:flex; align-items:center; gap:10px; margin-top:8px}
+    .cta .rocket{font-size:20px}
+    .subtle{color:var(--muted)}
+    .hr{height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); margin:8px 0}
+
+    @media (max-width:720px){
+      h1{font-size:32px}
+      .panel{padding:18px}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+
+    <div>
+      <span class="badge">Warum MindFrame?</span>
+      <h1>Ein Rahmen für deinen Tag – ohne zu erdrücken</h1>
+      <p class="lede">Gedanken wie 100 offene Tabs. Alltag und Job wie Jonglieren mit zu vielen Bällen. Genau so fühlt sich ADHS für viele an.</p>
+    </div>
+
+    <section class="panel hero">
+      <p>Stell dir einen Kopf vor, der nie stillsteht. Gedanken schießen von A nach B, <strong>100 Tabs</strong> im Gehirn sind gleichzeitig offen – und während man versucht, den Alltag und den Beruf zu meistern, fühlt es sich an wie Jonglieren mit zu vielen Bällen.</p>
+      <p><strong>Genau das erleben viele Menschen mit ADHS jeden Tag.</strong></p>
+      <div class="hr"></div>
+      <p><strong>MindFrame</strong> ist die Antwort auf dieses Chaos: ein Rahmen für den Tag, der <strong>Struktur</strong> gibt, ohne zu erdrücken. Ein Werkzeug, das große Aufgaben in <strong>kleine Blöcke</strong> zerlegt, damit man Schritt für Schritt vorankommt.</p>
+      <p>MindFrame ist nicht nur eine App, sondern eine <strong>Geschichte</strong>: vom Versuch, das eigene Chaos zu bändigen, hin zum Finden von Klarheit.</p>
+      <div class="cta">
+        <span class="rocket">🚀</span>
+        <strong>MindFrame – Funktionen</strong>
+      </div>
+      <p class="subtle">MindFrame ist ein webbasiertes Tool für Timeboxing. Es hilft, den Tag in kleine, überschaubare Einheiten zu zerlegen und schafft Klarheit im Alltag. Die App läuft komplett im Browser – ohne Installation, ohne Login.</p>
+    </section>
+
+    <div class="sep"></div>
+
+    <section class="panel features">
+      <div class="feature">
+        <h3>🧩 Hauptfunktionen</h3>
+        <div class="sections">
+          <div class="slot night">
+            <span class="dot" aria-hidden="true"></span>
+            <div><strong>Tagesplan in 15-Minuten-Blöcken</strong><br>
+              <span class="subtle">Der gesamte Tag (00:00–24:00) ist in 15-Minuten-Slots aufgeteilt. Jeder Slot kann mit Task & Ziel befüllt werden.</span>
+            </div>
+          </div>
+          <div class="slot morning">
+            <span class="dot" aria-hidden="true"></span>
+            <div><strong>Abschnitte: Nacht / Morgen / Mittag / Abend</strong><br>
+              <span class="subtle">Vier aufklappbare Bereiche erleichtern die Orientierung im Tagesrhythmus.</span>
+            </div>
+          </div>
+          <div class="slot midday">
+            <span class="dot" aria-hidden="true"></span>
+            <div><strong>Task-Nummern & Gruppierung</strong><br>
+              <span class="subtle">Mehrere Slots derselben Task-Nummer verschmelzen automatisch zu einem längeren Block.</span>
+            </div>
+          </div>
+          <div class="slot evening">
+            <span class="dot" aria-hidden="true"></span>
+            <div><strong>Export</strong><br>
+              <span class="subtle">Nur befüllte Tasks werden exportiert – kein unnötiger Ballast.</span>
+              <div class="chips">
+                <span class="chip">CSV</span>
+                <span class="chip">XLSX</span>
+                <span class="chip">Markdown</span>
+                <span class="chip">PDF</span>
+                <span class="chip">ICS (Kalender)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature">
+        <h3>📤 Unterstützte Exporte</h3>
+        <div class="export">
+          <div class="row">
+            <span class="pill">CSV → Tabellen für Excel & Co.</span>
+            <span class="pill">XLSX → Excel-kompatibel</span>
+            <span class="pill">Markdown → Notizen / GitHub / Obsidian</span>
+          </div>
+          <div class="row">
+            <span class="pill">PDF → Tagesplan zum Ausdrucken</span>
+            <span class="pill">ICS → Import in Google/Outlook/Apple</span>
+          </div>
+          <p class="subtle">Hinweis: Export berücksichtigt ausschließlich befüllte Tasks.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <h3>🧠 Für wen ist MindFrame?</h3>
+        <ul>
+          <li>Menschen mit ADHS, die Struktur im Alltag suchen</li>
+          <li>Berufstätige, die Fokus & Klarheit brauchen</li>
+          <li>Studierende, die ihre Lernzeit organisieren möchten</li>
+          <li>Kreative, die große Aufgaben in kleine Schritte runterbrechen</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>
+

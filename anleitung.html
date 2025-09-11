@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MindFrame – Anleitung</title>
+  <style>
+    :root{
+      --bg:#0b0c10;
+      --panel:#11131a;
+      --text:#e7edf5;
+      --muted:#a4adbb;
+      --accent:#6aa0ff;
+      --border:1px solid rgba(255,255,255,.08);
+      --radius:16px;
+      --shadow:0 8px 28px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; background:var(--bg);
+      color:var(--text); font:16px/1.6 system-ui, sans-serif;
+      -webkit-font-smoothing:antialiased; padding:28px 18px;
+    }
+    .wrap{max-width:980px; margin:0 auto; display:grid; gap:22px}
+    .badge{display:inline-block; font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+      color:#b7c7ff; background:#101a2d; padding:6px 10px; border-radius:999px; border:var(--border)}
+    h1{margin:4px 0 8px; font-size:36px}
+    .panel{
+      background:linear-gradient(180deg, #131726, #0f1220 60%, #0d1019);
+      border:var(--border); border-radius:var(--radius); box-shadow:var(--shadow);
+      padding:22px;
+    }
+    h2{margin-top:0; font-size:22px}
+    ul{margin:8px 0 0 20px; padding:0}
+    li{margin:6px 0}
+    .step{margin-bottom:18px}
+    .step h3{margin:0 0 6px; font-size:18px}
+    .muted{color:var(--muted)}
+    .sep{height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent)}
+    @media(max-width:720px){h1{font-size:28px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+
+    <div>
+      <span class="badge">Anleitung</span>
+      <h1>So nutzt du MindFrame</h1>
+      <p class="muted">Eine kurze Schritt-für-Schritt-Einführung, um sofort produktiv loszulegen.</p>
+    </div>
+
+    <section class="panel">
+      <h2>1. Aufgaben erfassen</h2>
+      <div class="step">
+        <h3>➕ Neue Task anlegen</h3>
+        <p>Gib oben im Eingabefeld deine Aufgabe ein und wähle eine Priorität (1–hoch, 2–mittel, 3–niedrig). Mit <kbd>Enter</kbd> oder Klick auf <strong>+</strong> wird sie in die Liste <em>„Heutige Tasks“</em> aufgenommen.</p>
+      </div>
+      <div class="step">
+        <h3>📂 Backlog nutzen</h3>
+        <p>Aufgaben, die du heute nicht erledigen musst, kannst du per Drag & Drop in den Bereich <em>„Wochen-Backlog“</em> ziehen.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>2. Tagesplan erstellen</h2>
+      <div class="step">
+        <h3>📅 Zeitraster</h3>
+        <p>Der Tag ist in 15-Minuten-Blöcke unterteilt (00:00–24:00). Vier Abschnitte (Nacht, Morgen, Mittag, Abend) lassen sich ein- und ausklappen.</p>
+      </div>
+      <div class="step">
+        <h3>🖱️ Drag & Drop</h3>
+        <p>Zieh Aufgaben aus den Listen in das Zeitraster. Sie rasten automatisch im 15-Minuten-Takt ein. Am unteren Rand kannst du die Dauer durch Ziehen verlängern oder verkürzen.</p>
+      </div>
+      <div class="step">
+        <h3>✎ Bearbeiten</h3>
+        <p>Jede geplante Aufgabe besitzt einen <strong>Edit-Button</strong>, um Titel oder Priorität direkt zu ändern.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>3. Aufräumen</h2>
+      <div class="step">
+        <h3>⏎ Zurück in die Liste</h3>
+        <p>Doppelklick auf eine geplante Aufgabe verschiebt sie zurück in „Heutige Tasks“.</p>
+      </div>
+      <div class="step">
+        <h3>🗑️ Löschen</h3>
+        <p>Zieh Aufgaben in die <strong>Löschzone</strong>, um sie dauerhaft zu entfernen.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>4. Exportieren</h2>
+      <p>Über das Menü oben rechts kannst du deine Planung exportieren:</p>
+      <ul>
+        <li><strong>CSV / XLSX</strong> – für Tabellen und Excel</li>
+        <li><strong>Markdown</strong> – für Notizen, GitHub, Obsidian</li>
+        <li><strong>PDF</strong> – Übersicht zum Ausdrucken</li>
+        <li><strong>ICS</strong> – Kalenderimport (Google, Outlook, Apple)</li>
+      </ul>
+      <p class="muted">Hinweis: Nur befüllte Tasks werden exportiert.</p>
+    </section>
+
+    <section class="panel">
+      <h2>5. Tipps für den Alltag</h2>
+      <ul>
+        <li>Beginne den Tag mit nur wenigen klaren Tasks.</li>
+        <li>Plane Pufferzeiten ein – Pausen sind genauso wichtig.</li>
+        <li>Nutze Farben & Prioritäten, um Überblick zu behalten.</li>
+        <li>Am Ende des Tages: kurze Reflexion, offene Tasks ins Backlog verschieben.</li>
+      </ul>
+    </section>
+
+  </main>
+</body>
+</html>
+
