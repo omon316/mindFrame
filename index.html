@@ -3,141 +3,166 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MindFrame — Timeboxing & Habits</title>
+  <title>MindFrame // TERMINAL</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="app-header">
+
+  <nav class="sidebar">
     <div class="brand">
-      <div class="logo" aria-hidden="true">⏱️</div>
-      <h1>MindFrame</h1>
-      <span class="subtitle">Timeboxing & Habits</span>
+      <div class="logo">MF_SYS</div>
+      <div class="ver">v2.0</div>
     </div>
-    <div class="exporter">
-      <label for="exportFormat" class="sr-only">Exportformat</label>
-      <select id="exportFormat" title="Exportformat wählen">
-        <option value="csv">CSV</option>
-        <option value="md">Markdown</option>
-        <option value="ics">ICS (Kalender)</option>
-        <option value="pdf">PDF</option>
-        <option value="xlsx">XLSX (CSV-Hack)</option>
-      </select>
-      <button id="exportButton" class="btn" title="Nur geplante Tasks exportieren">Exportieren</button>
-    </div>
-    <div class="meta-controls">
-      <a href="anleitung.html" class="btn btn-ghost" target="_blank" title="Anleitung öffnen">?</a>
-      <a href="impressum.html" class="btn btn-ghost" title="Impressum">§</a>
-    </div>
-  </header>
+    
+    <ul class="nav-links">
+      <li class="active" data-view="view-dashboard">
+        <span class="icon">⊞</span> Dashboard
+      </li>
+      <li data-view="view-schedule">
+        <span class="icon">⌚</span> Timeline
+      </li>
+      <li data-view="view-backlog">
+        <span class="icon">≣</span> Backlog DB
+      </li>
+      <li class="spacer"></li>
+      <li><a href="anleitung.html" target="_blank"><span class="icon">?</span> Manual</a></li>
+    </ul>
 
-  <main class="app">
-    <section class="left">
+    <div class="sys-status">
+      <div>MEM: OK</div>
+      <div>SYNC: LOCAL</div>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    
+    <section id="view-dashboard" class="view active">
+      <header class="view-header">
+        <h1>// DASHBOARD_OVERVIEW</h1>
+        <div class="header-controls">
+           <span id="date-display">--.--.----</span>
+        </div>
+      </header>
+
+      <div class="grid-container">
+        
+        <div class="panel technical-panel">
+          <div class="panel-head">SYSTEM_METRICS</div>
+          <div class="metrics-grid">
+            <div class="metric-box">
+              <span class="label">HABIT_INTEGRITY</span>
+              <span class="value" id="habit-percent">0%</span>
+              <div class="progress-track"><div id="habit-bar" class="progress-fill" style="width:0%"></div></div>
+            </div>
+            <div class="metric-box">
+              <span class="label">TASK_COMPLETION</span>
+              <span class="value" id="task-percent">0%</span>
+              <div class="progress-track"><div id="task-bar" class="progress-fill" style="width:0%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel technical-panel">
+          <div class="panel-head">
+            <span>ACTIVE_HABITS</span>
+            <button class="btn-text" onclick="document.getElementById('new-habit-input').focus()">[+ ADD]</button>
+          </div>
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th style="width:40px">STS</th>
+                <th>ROUTINE_NAME</th>
+                <th style="width:80px">STREAK</th>
+                <th style="width:40px">DEL</th>
+              </tr>
+            </thead>
+            <tbody id="habit-table-body">
+              </tbody>
+          </table>
+          <div class="input-line">
+            <span>></span>
+            <input type="text" id="new-habit-input" placeholder="Initialize new routine..." />
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="view-schedule" class="view">
+      <header class="view-header">
+        <h1>// TIMELINE_SEQUENCE</h1>
+        <div class="header-controls">
+           <button id="clear-schedule-btn" class="btn-tech">FLUSH_DONE</button>
+        </div>
+      </header>
       
-      <div class="panel mindset-panel">
-        <div class="panel-header">
-          <h2>Daily Mindset</h2>
-        </div>
-        
-        <div class="progress-section">
-          <div class="progress-row">
-            <div class="progress-label">
-              <span>Tasks erledigt</span>
-              <span id="task-percent">0%</span>
-            </div>
-            <div class="progress-track">
-              <div id="task-bar" class="progress-fill" style="width: 0%"></div>
-            </div>
-          </div>
-          <div class="progress-row">
-            <div class="progress-label">
-              <span>Habits</span>
-              <span id="habit-percent">0%</span>
-            </div>
-            <div class="progress-track">
-              <div id="habit-bar" class="progress-fill fill-habit" style="width: 0%"></div>
-            </div>
-          </div>
-        </div>
-
-        <div id="habit-list" class="habit-list">
-          </div>
-
-        <div class="add-row">
-          <input type="text" id="new-habit-input" placeholder="+ Neue Gewohnheit..." autocomplete="off">
+      <div class="schedule-wrapper">
+        <div id="schedule-container" class="tech-schedule">
+             <div id="drag-ghost" class="ghost-block"></div>
+             
+             <div id="time-grid" class="time-grid"></div>
+             
+             <div id="task-layer" class="task-layer"></div>
         </div>
       </div>
-      <div class="panel">
-        <div class="panel-header">
-          <h2>Tasks zum Einplanen</h2>
-          <button class="btn btn-small" id="btnClearDone" title="Erledigte Tasks löschen">Aufräumen</button>
-        </div>
-        
-        <div class="add-row">
-          <input type="text" id="newTaskInput" placeholder="+ Neuer Task (Enter)" autocomplete="off" />
-          <select id="newPriority" title="Priorität">
-            <option value="1">High</option>
-            <option value="2" selected>Normal</option>
-            <option value="3">Low</option>
+    </section>
+
+    <section id="view-backlog" class="view">
+      <header class="view-header">
+        <h1>// TASK_DATABASE</h1>
+      </header>
+
+      <div class="panel technical-panel">
+        <div class="input-bar">
+          <input type="text" id="newTaskInput" placeholder="New Task Description..." class="tech-input"/>
+          <select id="newPriority" class="tech-select">
+            <option value="1">PRIO_HIGH</option>
+            <option value="2" selected>PRIO_NRML</option>
+            <option value="3">PRIO_LOW</option>
           </select>
+          <button id="addTaskBtn" class="btn-tech">[ EXECUTE ]</button>
         </div>
 
-        <div id="todo-list" class="task-list source-list">
-          </div>
-      </div>
-    </section>
-
-    <section class="right">
-      <div class="panel" style="height:100%; display:flex; flex-direction:column; overflow:hidden;">
-        <div class="panel-header">
-          <h2>Tages-Schedule <span class="muted">(Klick auf Task = Erledigt)</span></h2>
-        </div>
-
-        <div id="schedule" class="schedule">
-          <div class="schedule-section">
-            <button class="section-toggle" data-target="#sec-night" aria-expanded="false">Nacht (00–06)</button>
-            <div id="sec-night" class="section-body" data-range-start="0" data-range-end="24" hidden></div>
-          </div>
-          <div class="schedule-section">
-            <button class="section-toggle" data-target="#sec-morning" aria-expanded="false">Morgen (06–12)</button>
-            <div id="sec-morning" class="section-body" data-range-start="24" data-range-end="48" hidden></div>
-          </div>
-          <div class="schedule-section">
-            <button class="section-toggle" data-target="#sec-midday" aria-expanded="false">Mittag (12–18)</button>
-            <div id="sec-midday" class="section-body" data-range-start="48" data-range-end="72" hidden></div>
-          </div>
-          <div class="schedule-section">
-            <button class="section-toggle" data-target="#sec-evening" aria-expanded="false">Abend (18–24)</button>
-            <div id="sec-evening" class="section-body" data-range-start="72" data-range-end="96" hidden></div>
-          </div>
+        <table class="tech-table full-width">
+          <thead>
+            <tr>
+              <th style="width:30px">ID</th>
+              <th>DESCRIPTION</th>
+              <th style="width:80px">PRIO</th>
+              <th style="width:100px">ACTION</th>
+            </tr>
+          </thead>
+          <tbody id="backlog-table-body">
+            </tbody>
+        </table>
+        <div class="hint-text">
+          Drag items from here to the "Timeline" view (switching views required if not split screen). 
+          *Pro Tip: Use the 'Timeline' view's sidebar to drag unscheduled tasks.*
         </div>
         
-        <div id="trash-zone" class="trash-zone">
-          <span>🗑️ Hierhin ziehen zum Löschen</span>
-        </div>
+        <div id="mini-backlog" class="hidden-source">
+           </div>
       </div>
     </section>
+
   </main>
 
-  <dialog id="editDialog">
+  <dialog id="editDialog" class="tech-dialog">
     <form method="dialog">
-      <h3>Task bearbeiten</h3>
-      <label>
-        Titel:
-        <input type="text" id="editTitle" required />
-      </label>
-      <label>
-        Priorität:
+      <div class="dialog-header">:: EDIT_ENTITY ::</div>
+      <label>TITLE <input type="text" id="editTitle"></label>
+      <label>PRIORITY 
         <select id="editPriority">
-          <option value="1">Hoch (!!!)</option>
-          <option value="2">Mittel</option>
-          <option value="3">Niedrig</option>
+          <option value="1">HIGH</option>
+          <option value="2">NORMAL</option>
+          <option value="3">LOW</option>
         </select>
       </label>
-      <div class="dialog-actions">
-        <button value="cancel" class="btn btn-ghost">Abbrechen</button>
-        <button value="save" class="btn">Speichern</button>
+      <div class="dialog-footer">
+        <button value="cancel" class="btn-tech-ghost">CANCEL</button>
+        <button value="save" class="btn-tech">CONFIRM</button>
       </div>
     </form>
   </dialog>
