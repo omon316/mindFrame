@@ -1,205 +1,225 @@
-/* MindFrame — schlicht, nüchtern, robust */
-:root{
-  --bg:#0b0c0f;
-  --panel:#11131a;
-  --muted:#9aa3b2;
-  --text:#e7edf5;
-  --accent:#6aa0ff;
-  --accent-2:#3c7bff;
-  --danger:#ff5d5d;
-  --warn:#ffc857;
-  --ok:#5ee27d; /* Farbe für Erfolg/Erledigt */
-  --habit-color: #f97316; /* Orange für Habits/Streaks */
+/* TERMINAL THEME VARIABLES */
+:root {
+  --bg-core: #050505;
+  --bg-panel: #0a0a0a;
+  --bg-sidebar: #0f0f0f;
   
-  --stripe-1:#f87171;
-  --stripe-2:#facc15;
-  --stripe-3:#4ade80;
+  --border: #333;
+  --border-light: #444;
+  --grid-line: #1a1a1a;
   
-  --slot-height:24px;
-  --time-col-width:48px;
+  --text-main: #ccc;
+  --text-muted: #666;
+  --text-bright: #fff;
   
-  --bg-night: #0f1827;     
-  --bg-morning: #13223a;   
-  --bg-midday: #163047;    
-  --bg-evening: #1a273a;   
+  --accent: #00bcd4; /* Cyan */
+  --success: #00ff9d; /* Tech Green */
+  --warn: #ffcc00;
+  --danger: #ff3333;
   
-  --radius:14px;
-  --shadow:0 6px 24px rgba(0,0,0,.45);
-  --gap:14px;
-  --border:1px solid rgba(255,255,255,.08);
+  --font-ui: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace; /* Wichtig für Tabellen/Zahlen */
+  
+  --slot-height: 40px; /* Höher für mehr Platz */
 }
 
-*{box-sizing:border-box}
-html,body{height:100%; margin:0; overflow:hidden}
-body{
-  background:var(--bg); color:var(--text);
-  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-size:14px; line-height:1.4;
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0;
+  background: var(--bg-core); color: var(--text-main);
+  font-family: var(--font-ui);
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
 }
 
-/* --- Layout --- */
-.app-header{
-  height:60px; display:flex; align-items:center; justify-content:space-between;
-  padding:0 24px; border-bottom:var(--border); background:var(--panel);
+/* --- SIDEBAR --- */
+.sidebar {
+  width: 200px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
 }
-.brand{display:flex; align-items:center; gap:12px}
-.logo{font-size:24px}
-h1{margin:0; font-size:18px; font-weight:700; letter-spacing:-0.5px}
-.subtitle{color:var(--muted); font-size:13px; font-weight:400; opacity:0.7}
+.brand {
+  padding: 20px; border-bottom: 1px solid var(--border);
+}
+.logo { font-family: var(--font-mono); font-weight: 700; color: var(--text-bright); font-size: 18px; }
+.ver { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); }
 
-.app{
-  display:grid; grid-template-columns:350px 1fr; gap:var(--gap);
-  height:calc(100% - 60px); padding:var(--gap);
+.nav-links { list-style: none; padding: 0; margin: 20px 0; flex: 1; }
+.nav-links li {
+  padding: 12px 20px; cursor: pointer; border-left: 2px solid transparent;
+  color: var(--text-muted); transition: 0.2s; font-size: 14px;
+}
+.nav-links li:hover { color: var(--text-bright); background: rgba(255,255,255,0.02); }
+.nav-links li.active {
+  border-left-color: var(--accent);
+  color: var(--accent);
+  background: rgba(0, 188, 212, 0.05);
+}
+.nav-links .spacer { height: 20px; }
+.icon { display: inline-block; width: 20px; text-align: center; margin-right: 8px; font-family: var(--font-mono); }
+
+.sys-status {
+  padding: 20px; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); border-top: 1px solid var(--border);
 }
 
-/* Sections */
-.left, .right{height:100%; min-height:0; display:flex; flex-direction:column; gap: var(--gap);}
-.panel{
-  background:var(--panel); border:var(--border); border-radius:var(--radius);
-  box-shadow:var(--shadow); display:flex; flex-direction:column; overflow:hidden;
+/* --- MAIN --- */
+.main-content { flex: 1; position: relative; overflow: hidden; }
+.view {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  padding: 20px; display: none; overflow-y: auto;
+  background: var(--bg-core);
+}
+.view.active { display: block; }
+
+.view-header {
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px;
+}
+.view-header h1 {
+  font-family: var(--font-mono); font-size: 16px; margin: 0; color: var(--accent); letter-spacing: 1px;
 }
 
-.panel-header{
-  padding:16px; border-bottom:var(--border); display:flex; justify-content:space-between; align-items:center;
-  background:rgba(255,255,255,0.02);
+/* --- TECHNICAL TABLES & PANELS --- */
+.technical-panel {
+  background: var(--bg-panel); border: 1px solid var(--border);
+  margin-bottom: 20px;
 }
-.panel-header h2{margin:0; font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted)}
-
-/* Inputs */
-.add-row{padding:12px; border-bottom:var(--border); display:flex; gap:8px}
-input[type="text"], select{
-  background:#050507; border:1px solid #333; color:var(--text);
-  border-radius:6px; padding:6px 10px; font-size:13px; outline:none;
+.panel-head {
+  background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border);
+  padding: 8px 12px; font-family: var(--font-mono); font-size: 11px; color: var(--text-muted);
+  display: flex; justify-content: space-between;
 }
-input[type="text"]:focus{border-color:var(--accent)}
-#newTaskInput, #new-habit-input {flex:1}
 
-/* --- Listen & Items --- */
-.task-list{flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px}
-.task-item{
-  background:rgba(255,255,255,0.04); padding:10px 12px; border-radius:8px;
-  border:1px solid transparent; cursor:grab; user-select:none;
-  display:flex; justify-content:space-between; align-items:center;
-  transition:all 0.15s; font-size:13px;
+.tech-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
 }
-.task-item:hover{background:rgba(255,255,255,0.07); border-color:rgba(255,255,255,0.1)}
-.task-item.priority-1{border-left:3px solid var(--stripe-1)}
-.task-item.priority-2{border-left:3px solid var(--stripe-2)}
-.task-item.priority-3{border-left:3px solid var(--stripe-3)}
-
-/* --- Schedule --- */
-.schedule{flex:1; overflow-y:auto; position:relative; scroll-behavior:smooth}
-.schedule-section{border-bottom:1px solid rgba(0,0,0,0.5)}
-.section-toggle{
-  width:100%; text-align:left; background:rgba(255,255,255,0.03); border:none; color:var(--muted);
-  padding:8px 16px; font-size:12px; font-weight:600; cursor:pointer; text-transform:uppercase; letter-spacing:0.05em;
-  border-bottom:var(--border); outline:none;
+.tech-table th {
+  text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
 }
-.section-toggle:hover{color:var(--text); background:rgba(255,255,255,0.06)}
-.section-body{position:relative; min-height:100px}
-
-/* Background Gradients for Sections */
-#sec-night { background: repeating-linear-gradient(0deg, transparent 0, transparent calc(var(--slot-height) - 1px), rgba(255,255,255,0.03) calc(var(--slot-height) - 1px), rgba(255,255,255,0.03) var(--slot-height)), var(--bg-night); }
-#sec-morning { background: repeating-linear-gradient(0deg, transparent 0, transparent calc(var(--slot-height) - 1px), rgba(255,255,255,0.03) calc(var(--slot-height) - 1px), rgba(255,255,255,0.03) var(--slot-height)), var(--bg-morning); }
-#sec-midday { background: repeating-linear-gradient(0deg, transparent 0, transparent calc(var(--slot-height) - 1px), rgba(255,255,255,0.03) calc(var(--slot-height) - 1px), rgba(255,255,255,0.03) var(--slot-height)), var(--bg-midday); }
-#sec-evening { background: repeating-linear-gradient(0deg, transparent 0, transparent calc(var(--slot-height) - 1px), rgba(255,255,255,0.03) calc(var(--slot-height) - 1px), rgba(255,255,255,0.03) var(--slot-height)), var(--bg-evening); }
-
-/* --- Event Blocks (Tasks im Schedule) --- */
-.event-block{
-  position:absolute; left:50px; right:10px; border-radius:6px;
-  background:rgba(60,123,255,0.25); border:1px solid rgba(60,123,255,0.4);
-  padding:4px 8px; overflow:hidden; cursor:pointer; font-size:12px;
-  box-shadow:0 2px 4px rgba(0,0,0,0.2); transition: transform 0.1s, box-shadow 0.1s;
+.tech-table td {
+  padding: 8px 12px; border-bottom: 1px solid var(--grid-line);
 }
-.event-block:hover{z-index:10; border-color:var(--accent)}
+.tech-table tr:hover td { background: rgba(255,255,255,0.02); }
 
-/* Erledigte Tasks Styles (Neu) */
-.event-block.is-done {
-    background: rgba(94, 226, 125, 0.15); /* Grünlich transparent */
-    border-color: var(--ok);
-    opacity: 0.7;
+/* --- INPUTS --- */
+.input-line, .input-bar {
+  display: flex; gap: 8px; padding: 10px; align-items: center;
+}
+.tech-input, .input-line input {
+  background: transparent; border: none; border-bottom: 1px solid var(--border);
+  color: var(--text-bright); font-family: var(--font-mono); padding: 5px; flex: 1;
+}
+.tech-input:focus, .input-line input:focus { outline: none; border-bottom-color: var(--accent); }
+.tech-select { background: #000; color: #fff; border: 1px solid var(--border); padding: 5px; }
+
+/* --- METRICS --- */
+.metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
+.metric-box { border: 1px solid var(--border); padding: 15px; background: rgba(0,0,0,0.2); }
+.metric-box .label { display: block; font-family: var(--font-mono); font-size: 10px; color: var(--text-muted); margin-bottom: 5px; }
+.metric-box .value { display: block; font-size: 24px; font-weight: bold; color: var(--text-bright); margin-bottom: 10px; }
+.progress-track { height: 4px; background: #222; width: 100%; }
+.progress-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
+
+/* --- SCHEDULE (GRID SYSTEM) --- */
+.schedule-wrapper {
+  position: relative;
+  height: calc(100vh - 100px); /* Platz für Header abziehen */
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  background: #080808;
+}
+
+.tech-schedule {
+  position: relative;
+  width: 100%;
+  /* Min-Höhe für 24 Stunden * Slot Height */
+  height: calc(24 * 4 * var(--slot-height) / 4); /* 24h */
+}
+
+/* Das Zeit-Raster */
+.time-row {
+  height: var(--slot-height); /* 1 Stunde */
+  border-bottom: 1px solid var(--grid-line);
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+.time-row:nth-child(4n) { /* Jede volle Stunde */
+    border-bottom: 1px solid var(--border-light);
+}
+.time-label {
+    width: 60px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    padding-left: 10px;
+    border-right: 1px solid var(--grid-line);
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.time-content-area { flex: 1; position: relative; }
+
+/* TASK BLOCKS */
+.task-block {
+    position: absolute;
+    left: 70px; right: 10px; /* Neben der Zeitspalte */
+    background: rgba(0, 188, 212, 0.15);
+    border: 1px solid var(--accent);
+    color: var(--text-bright);
+    font-size: 12px;
+    padding: 4px 8px;
+    overflow: hidden;
+    cursor: grab;
+    z-index: 10;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+.task-block.done {
+    border-color: var(--success);
+    background: rgba(0, 255, 157, 0.1);
+    color: var(--text-muted);
     text-decoration: line-through;
-    color: var(--muted);
-}
-.event-block.is-done::after {
-    content: '✔';
-    position: absolute; right: 5px; top: 2px;
-    color: var(--ok); font-weight: bold;
 }
 
-/* Time Labels */
-.section-body::before{
-  content:''; position:absolute; top:0; bottom:0; left:0; width:40px;
-  border-right:1px solid rgba(255,255,255,0.05); pointer-events:none;
+/* GHOST PREVIEW */
+.ghost-block {
+    display: none; /* Standardmäßig unsichtbar */
+    position: absolute;
+    left: 70px; right: 10px;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.05),
+      rgba(255,255,255,0.05) 10px,
+      rgba(255,255,255,0.1) 10px,
+      rgba(255,255,255,0.1) 20px
+    );
+    border: 1px dashed var(--text-muted);
+    z-index: 5; /* Unter dem echten Task */
+    pointer-events: none;
 }
 
-/* Trash Zone */
-.trash-zone{
-  height:50px; border-top:var(--border); background:#1e1414; color:#ff7b7b;
-  display:flex; align-items:center; justify-content:center; font-weight:600;
-  font-size:12px; letter-spacing:0.05em; transition:background 0.2s;
+/* BUTTONS */
+.btn-tech {
+    background: var(--accent); color: #000; border: none; padding: 6px 12px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: bold; cursor: pointer;
 }
-.trash-zone.drag-hover{background:#3a1818}
+.btn-tech:hover { background: #fff; }
+.btn-text { background:none; border:none; color: var(--accent); cursor: pointer; font-family: var(--font-mono); font-size: 10px;}
+.btn-tech-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; cursor: pointer; }
 
-/* Buttons */
-.btn{
-  background:var(--accent); color:#fff; border:none; padding:6px 12px;
-  border-radius:6px; font-weight:600; font-size:12px; cursor:pointer; transition:0.2s;
-}
-.btn:hover{background:var(--accent-2)}
-.btn-ghost{background:transparent; color:var(--muted)}
-.btn-ghost:hover{color:var(--text); background:rgba(255,255,255,0.1)}
-.btn-small{padding:4px 8px; font-size:11px}
-
-/* --- MINDSET / HABIT TRACKER STYLES (NEU) --- */
-.mindset-panel {
-    /* max-height: 40%; wenn man Platz sparen will */
-    flex: 0 0 auto; /* Nicht unendlich wachsen */
-}
-.progress-section { padding: 16px; border-bottom: var(--border); }
-.progress-row { margin-bottom: 12px; }
-.progress-row:last-child { margin-bottom: 0; }
-.progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
-.progress-track { background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden; }
-.progress-fill { height: 100%; background: var(--ok); transition: width 0.5s ease; }
-.progress-fill.fill-habit { background: var(--habit-color); }
-
-.habit-list { padding: 12px; max-height: 200px; overflow-y: auto; }
-.habit-item {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 10px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 6px;
-    border: 1px solid transparent; transition: all 0.2s;
-}
-.habit-item:hover { background: rgba(255,255,255,0.06); }
-.habit-left { display: flex; align-items: center; gap: 10px; }
-.habit-check {
-    width: 18px; height: 18px; border: 2px solid var(--muted); border-radius: 50%;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-}
-.habit-check:hover { border-color: var(--text); }
-.habit-item.completed .habit-check { background: var(--habit-color); border-color: var(--habit-color); }
-.habit-item.completed .habit-text { text-decoration: line-through; color: var(--muted); }
-
-.habit-meta { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: bold; color: var(--habit-color); }
-.habit-delete { opacity: 0; color: var(--muted); cursor: pointer; transition: 0.2s; margin-left: 8px;}
-.habit-item:hover .habit-delete { opacity: 1; }
-.habit-delete:hover { color: var(--danger); }
-
-/* Helpers */
-.muted{color:var(--muted)}
-.sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0}
+/* DRAGGABLE FROM BACKLOG */
+.backlog-source { cursor: grab; }
+.backlog-source:active { cursor: grabbing; }
 
 /* Dialog */
-dialog{
-  background:var(--panel); color:var(--text); border:1px solid rgba(255,255,255,0.1);
-  border-radius:var(--radius); box-shadow:0 20px 50px rgba(0,0,0,0.5); padding:24px; width:300px;
+.tech-dialog {
+    background: var(--bg-panel); border: 1px solid var(--accent); color: var(--text-main);
+    width: 300px; padding: 0;
 }
-dialog::backdrop{background:rgba(0,0,0,0.6)}
-dialog form{display:flex; flex-direction:column; gap:16px}
-dialog label{display:flex; flex-direction:column; gap:6px; font-size:12px; color:var(--muted)}
-dialog .dialog-actions{display:flex; justify-content:flex-end; gap:8px; margin-top:8px}
-
-/* Dragging visual adjustments */
-.drop-hover{background:rgba(255,255,255,0.05) !important}
-.gu-mirror{position:fixed !important; margin:0 !important; z-index:9999 !important; opacity:0.8}
+.dialog-header { background: var(--accent); color: #000; padding: 8px; font-family: var(--font-mono); font-weight: bold;}
+.tech-dialog form { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+.tech-dialog label { display: flex; flex-direction: column; gap: 5px; font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); }
+.dialog-footer { display: flex; justify-content: flex-end; gap: 10px; }
