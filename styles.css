@@ -249,6 +249,51 @@ body {
 .backlog-source { cursor: grab; }
 .backlog-source:active { cursor: grabbing; }
 
+/* Hint-Text unter dem Backlog */
+.hint-text {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    border-top: 1px solid var(--border);
+}
+
+/* Placement Hint Banner (im Schedule-View, wenn Task armed ist) */
+.placement-hint {
+    background: var(--accent);
+    color: #000;
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    animation: pulse 1.6s ease-in-out infinite;
+}
+.placement-hint[hidden] { display: none; }
+.placement-hint b { font-weight: 700; }
+.placement-hint .btn-tech-ghost {
+    background: rgba(0,0,0,.15);
+    color: #000;
+    border-color: rgba(0,0,0,.3);
+}
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,188,212,.4); }
+    50%      { box-shadow: 0 0 0 8px rgba(0,188,212,0); }
+}
+
+/* Backlog: armed-Zustand */
+.backlog-row.armed {
+    background: rgba(0, 188, 212, 0.12);
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* Schedule-Cursor beim Platzieren */
+#schedule-container.placement-mode { cursor: crosshair; }
+#schedule-container.placement-mode .task-block { cursor: not-allowed; }
+
 /* Dialog */
 .tech-dialog {
     background: var(--bg-panel); border: 1px solid var(--accent); color: var(--text-main);

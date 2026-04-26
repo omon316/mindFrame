@@ -19,6 +19,7 @@
     let tasks = [];
     let habits = [];
     let currentView = 'view-dashboard';
+    let armedTaskId = null;  // Task, der per Tap auf Slot platziert wird
 
     // --- DOM CACHE ---
     const els = (sel) => document.querySelectorAll(sel);
@@ -151,21 +152,29 @@
     function renderBacklog() {
         const tbody = el('#backlog-table-body');
         tbody.innerHTML = '';
-        
+
         const backlogTasks = tasks.filter(t => t.startIndex === null);
-        
+
         backlogTasks.forEach(t => {
             const tr = document.createElement('tr');
+            tr.className = 'backlog-row' + (armedTaskId === t.id ? ' armed' : '');
             tr.innerHTML = `
                 <td style="font-family:var(--font-mono); color:var(--text-muted)">${t.id.slice(-4)}</td>
-                <td>${t.title}</td>
+                <td>${escapeHtml(t.title)}</td>
                 <td style="color:${getPriorityColor(t.priority)}">${getPriorityLabel(t.priority)}</td>
-                <td>
-                   <button class="btn-text" onclick="window.mf.scheduleNow('${t.id}')">SCHEDULE ></button>
+                <td style="display:flex; gap:6px">
+                   <button class="btn-text" onclick="window.mf.armPlacement('${t.id}')">PLACE&nbsp;&gt;</button>
+                   <button class="btn-text" style="color:var(--danger)" onclick="window.mf.deleteTask('${t.id}')">X</button>
                 </td>
             `;
             tbody.appendChild(tr);
         });
+    }
+
+    function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({
+            '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+        })[c]);
     }
 
     function renderHabits() {
@@ -316,18 +325,37 @@
     // --- LOGIC: HELPERS ---
 
     window.mf = {
-        scheduleNow: (id) => {
+        // Tap-to-Place: armiert einen Task und wechselt in die Timeline.
+        // User tippt dann einen Slot, um den Task dort zu platzieren.
+        armPlacement: (id) => {
             const t = tasks.find(x => x.id === id);
-            if(t) {
-                // Finde ersten freien Slot ab 08:00 (32 slots)
-                t.startIndex = 32; 
-                t.durationSlots = 4; // 1h
-                saveData();
-                renderSchedule();
-                renderBacklog();
-                // Wechsle zur Schedule View
-                el('.nav-links li[data-view="view-schedule"]').click();
-            }
+            if(!t) return;
+            armedTaskId = id;
+            // Hint-Banner anzeigen
+            const hint = el('#placement-hint');
+            const title = el('#placement-hint-title');
+            if(title) title.innerText = t.title;
+            if(hint) hint.hidden = false;
+            el('#schedule-container').classList.add('placement-mode');
+            // View wechseln
+            el('.nav-links li[data-view="view-schedule"]').click();
+            renderBacklog(); // damit "armed"-Highlight erscheint
+        },
+        cancelPlacement: () => {
+            armedTaskId = null;
+            const hint = el('#placement-hint');
+            if(hint) hint.hidden = true;
+            el('#schedule-container').classList.remove('placement-mode');
+            renderBacklog();
+        },
+        deleteTask: (id) => {
+            if(!confirm('TASK LOESCHEN?')) return;
+            tasks = tasks.filter(x => x.id !== id);
+            // Falls geloeschter Task armed war, abbrechen
+            if(armedTaskId === id) window.mf.cancelPlacement();
+            saveData();
+            renderBacklog();
+            renderSchedule();
         },
         toggleHabit: (id) => {
             const h = habits.find(x => x.id === id);
@@ -392,6 +420,43 @@
             renderSchedule();
             updateMetrics();
         }
+    });
+
+    // Cancel-Button im Placement-Banner
+    el('#placement-cancel-btn').addEventListener('click', () => window.mf.cancelPlacement());
+
+    // Tap auf einen Slot im Schedule = armierter Task wird hier platziert.
+    // Klicks auf bestehende Task-Blocks werden ignoriert (eigener Handler dort).
+    el('#schedule-container').addEventListener('click', (e) => {
+        if(!armedTaskId) return;
+        if(e.target.closest('.task-block')) return; // Klick auf bestehenden Task -> ignorieren
+
+        const t = tasks.find(x => x.id === armedTaskId);
+        if(!t) { window.mf.cancelPlacement(); return; }
+
+        // Y-Position relativ zum Container -> Slot-Index
+        // getBoundingClientRect beruecksichtigt Scroll bereits.
+        const rect = e.currentTarget.getBoundingClientRect();
+        const y = e.clientY - rect.top;
+        let slotIndex = Math.floor(y / SLOT_HEIGHT);
+
+        // Defaults + Bounds
+        if(t.durationSlots == null || t.durationSlots < 1) t.durationSlots = 4; // 1h
+        if(slotIndex < 0) slotIndex = 0;
+        if(slotIndex + t.durationSlots > TOTAL_SLOTS) {
+            slotIndex = TOTAL_SLOTS - t.durationSlots;
+        }
+        t.startIndex = slotIndex;
+
+        // State zuruecksetzen
+        armedTaskId = null;
+        const hint = el('#placement-hint');
+        if(hint) hint.hidden = true;
+        el('#schedule-container').classList.remove('placement-mode');
+
+        saveData();
+        renderBacklog();
+        renderSchedule();
     });
 
     // Helper functions

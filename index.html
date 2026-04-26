@@ -97,13 +97,18 @@
            <button id="clear-schedule-btn" class="btn-tech">FLUSH_DONE</button>
         </div>
       </header>
-      
+
+      <div id="placement-hint" class="placement-hint" hidden>
+        <span>Tippe einen Slot, um <b id="placement-hint-title"></b> zu platzieren.</span>
+        <button class="btn-tech-ghost" id="placement-cancel-btn">ABBRECHEN</button>
+      </div>
+
       <div class="schedule-wrapper">
         <div id="schedule-container" class="tech-schedule">
              <div id="drag-ghost" class="ghost-block"></div>
-             
+
              <div id="time-grid" class="time-grid"></div>
-             
+
              <div id="task-layer" class="task-layer"></div>
         </div>
       </div>
@@ -130,20 +135,16 @@
             <tr>
               <th style="width:30px">ID</th>
               <th>DESCRIPTION</th>
-              <th style="width:80px">PRIO</th>
-              <th style="width:100px">ACTION</th>
+              <th style="width:70px">PRIO</th>
+              <th style="width:130px">ACTION</th>
             </tr>
           </thead>
           <tbody id="backlog-table-body">
             </tbody>
         </table>
         <div class="hint-text">
-          Drag items from here to the "Timeline" view (switching views required if not split screen). 
-          *Pro Tip: Use the 'Timeline' view's sidebar to drag unscheduled tasks.*
+          Tippe <b>PLACE</b>, um einen Task auf der Timeline zu platzieren. Tippe <b>X</b>, um einen Task zu loeschen.
         </div>
-        
-        <div id="mini-backlog" class="hidden-source">
-           </div>
       </div>
     </section>
 
