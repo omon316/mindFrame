@@ -185,6 +185,15 @@ body {
     cursor: grab;
     z-index: 10;
     box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    /* Touch: Browser darf Touch nicht als Scroll abfangen, sonst kein Drag */
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.task-block.dragging {
+    cursor: grabbing;
+    opacity: 0.7;
+    box-shadow: 0 6px 20px rgba(0,188,212,.4);
 }
 .task-block.done {
     border-color: var(--success);

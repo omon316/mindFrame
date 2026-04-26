@@ -24,6 +24,11 @@
     function init() {
         loadData();
         setupNavigation();
+        // Globale interact.js Konfiguration:
+        // - 5px Bewegungstoleranz → Tipp/Klick zaehlt nicht als Drag
+        if (window.interact) {
+            interact.pointerMoveTolerance(5);
+        }
         renderHabits();
         renderBacklog();
         renderTimeGrid(); // Baut das statische Grid
@@ -181,6 +186,7 @@
             listeners: {
                 start(event) {
                     const target = event.target;
+                    target.classList.add('dragging');
                     target.setAttribute('data-moved', 'false');
                     target.setAttribute('data-y', '0');
                     // Ghost anzeigen
@@ -208,6 +214,7 @@
                 },
                 end(event) {
                     const target = event.target;
+                    target.classList.remove('dragging');
                     const ghost = el('#drag-ghost');
                     ghost.style.display = 'none';
 
