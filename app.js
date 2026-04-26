@@ -3,11 +3,13 @@
     // --- CONFIG ---
     const STORAGE_TASKS = 'mf_v2_tasks';
     const STORAGE_HABITS = 'mf_v2_habits';
-    // 60px pro Stunde, d.h. 15px pro 15min Slot
-    const SLOT_HEIGHT = 15; 
     const SLOTS_PER_HOUR = 4;
     const TOTAL_HOURS = 24;
     const TOTAL_SLOTS = TOTAL_HOURS * SLOTS_PER_HOUR; // 96 Slots
+    // Slot-Höhe wird aus CSS (--slot-height) gelesen → eine Quelle der Wahrheit
+    const SLOT_HEIGHT = parseInt(
+        getComputedStyle(document.documentElement).getPropertyValue('--slot-height')
+    ) || 15;
 
     // --- STATE ---
     let tasks = [];
@@ -26,11 +28,7 @@
         renderBacklog();
         renderTimeGrid(); // Baut das statische Grid
         renderSchedule(); // Platziert die Tasks
-        setupInteractions();
         updateMetrics();
-        
-        // Default View
-        el('.nav-links li[data-view="view-dashboard"]').click();
     }
 
     // --- NAVIGATION ---
@@ -73,18 +71,15 @@
         const container = el('#time-grid');
         container.innerHTML = '';
         
-        // Generiere 24 Stunden Zeilen
-        for(let h = 0; h < 24; h++) {
-            // Eine Stunden-Zeile (Höhe = 4 Slots)
+        // Generiere 24 Stunden Zeilen (Höhe wird via CSS --hour-height gesetzt)
+        for(let h = 0; h < TOTAL_HOURS; h++) {
             const row = document.createElement('div');
             row.className = 'time-row';
-            row.style.height = (SLOT_HEIGHT * 4) + 'px'; // 60px
-            
+
             const label = document.createElement('div');
             label.className = 'time-label';
-            // Format 08:00
             label.innerText = `${h.toString().padStart(2, '0')}:00`;
-            
+
             row.appendChild(label);
             container.appendChild(row);
         }
@@ -115,11 +110,11 @@
                 e.stopPropagation();
                 openEditDialog(t.id);
             });
-            
-            // Single Click to toggle done
+
+            // Single Click to toggle done – aber nur wenn nicht gezogen/resized wurde
             div.addEventListener('click', (e) => {
-                 // Prevent trigger on drag end
-                 if(div.getAttribute('data-dragging') === 'true') return;
+                 if(div.getAttribute('data-moved') === 'true') return;
+                 if(div.getAttribute('data-resized') === 'true') return;
                  t.completed = !t.completed;
                  saveData();
                  renderSchedule();
@@ -141,7 +136,7 @@
         backlogTasks.forEach(t => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td style="font-family:var(--font-mono); color:var(--text-muted)">${t.id.substr(-4)}</td>
+                <td style="font-family:var(--font-mono); color:var(--text-muted)">${t.id.slice(-4)}</td>
                 <td>${t.title}</td>
                 <td style="color:${getPriorityColor(t.priority)}">${getPriorityLabel(t.priority)}</td>
                 <td>
@@ -185,82 +180,78 @@
             ],
             listeners: {
                 start(event) {
-                    event.target.setAttribute('data-dragging', 'true');
+                    const target = event.target;
+                    target.setAttribute('data-moved', 'false');
+                    target.setAttribute('data-y', '0');
                     // Ghost anzeigen
                     const ghost = el('#drag-ghost');
-                    const rect = event.target.getBoundingClientRect();
-                    // Initiale Position des Ghost
-                    ghost.style.top = event.target.style.top;
-                    ghost.style.height = event.target.style.height;
+                    ghost.style.top = target.style.top;
+                    ghost.style.height = target.style.height;
                     ghost.style.display = 'block';
                 },
                 move(event) {
                     const target = event.target;
                     const ghost = el('#drag-ghost');
-                    
-                    // Berechne aktuelle Verschiebung
+
+                    // Bewegung registrieren (verhindert Done-Toggle nach Drag)
+                    target.setAttribute('data-moved', 'true');
+
+                    // Aktuelle Verschiebung
                     const currentY = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-                    
-                    // Bewege das Element visuell
                     target.style.transform = `translate(0px, ${currentY}px)`;
                     target.setAttribute('data-y', currentY);
-                    
-                    // --- GHOST LOGIC ---
-                    // Wir müssen wissen, wo das Element relativ zum Container ist
-                    // Einfacher: Wir nehmen die Original top Position + currentY
-                    const originalTop = parseInt(target.style.top || 0);
-                    const absoluteY = originalTop + currentY;
-                    
-                    // Snap Berechnung für den Ghost
-                    const snapIndex = Math.round(absoluteY / SLOT_HEIGHT);
-                    const snapTop = snapIndex * SLOT_HEIGHT;
-                    
-                    ghost.style.top = snapTop + 'px';
+
+                    // Ghost auf das nächste Slot-Raster snappen
+                    const originalTop = parseInt(target.style.top) || 0;
+                    const snapIndex = Math.round((originalTop + currentY) / SLOT_HEIGHT);
+                    ghost.style.top = (snapIndex * SLOT_HEIGHT) + 'px';
                 },
                 end(event) {
                     const target = event.target;
                     const ghost = el('#drag-ghost');
-                    ghost.style.display = 'none'; // Ghost verstecken
-                    
-                    // Berechne die finalen Slots
+                    ghost.style.display = 'none';
+
                     const currentY = parseFloat(target.getAttribute('data-y')) || 0;
-                    const originalTop = parseInt(target.style.top || 0);
-                    const finalY = originalTop + currentY;
-                    
-                    let newStartIndex = Math.round(finalY / SLOT_HEIGHT);
-                    
-                    // Bounds Check (0 bis 96)
-                    if(newStartIndex < 0) newStartIndex = 0;
-                    if(newStartIndex > 95) newStartIndex = 95;
-                    
-                    // Update Model
+                    const originalTop = parseInt(target.style.top) || 0;
+                    let newStartIndex = Math.round((originalTop + currentY) / SLOT_HEIGHT);
+
+                    // Bounds Check
                     const t = tasks.find(x => x.id === target.dataset.id);
+                    const dur = t ? t.durationSlots : 1;
+                    if(newStartIndex < 0) newStartIndex = 0;
+                    if(newStartIndex > TOTAL_SLOTS - dur) newStartIndex = TOTAL_SLOTS - dur;
+
                     if(t) {
                         t.startIndex = newStartIndex;
                         saveData();
                     }
-                    
-                    // Reset DOM (Render macht den Rest sauber)
-                    target.setAttribute('data-dragging', 'false');
+
                     target.style.transform = 'translate(0px, 0px)';
-                    target.setAttribute('data-y', 0);
+                    target.setAttribute('data-y', '0');
                     renderSchedule();
                 }
             }
         })
         .resizable({
             edges: { bottom: true, top: false, left: false, right: false },
+            margin: 8, // schmaler Resize-Hotspot, kollidiert weniger mit Drag
             listeners: {
+                start(event) {
+                    event.target.setAttribute('data-resized', 'false');
+                },
                 move(event) {
-                    let { height } = event.rect;
-                    event.target.style.height = height + 'px';
+                    event.target.setAttribute('data-resized', 'true');
+                    event.target.style.height = event.rect.height + 'px';
                 },
                 end(event) {
-                    const h = event.rect.height;
-                    const slots = Math.round(h / SLOT_HEIGHT);
+                    const slots = Math.round(event.rect.height / SLOT_HEIGHT);
                     const t = tasks.find(x => x.id === event.target.dataset.id);
                     if(t) {
                         t.durationSlots = Math.max(1, slots);
+                        // Bounds: Block darf nicht über Mitternacht hinausragen
+                        if(t.startIndex + t.durationSlots > TOTAL_SLOTS) {
+                            t.durationSlots = TOTAL_SLOTS - t.startIndex;
+                        }
                         saveData();
                         renderSchedule();
                     }

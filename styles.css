@@ -20,7 +20,8 @@
   --font-ui: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace; /* Wichtig für Tabellen/Zahlen */
   
-  --slot-height: 40px; /* Höher für mehr Platz */
+  --slot-height: 15px;     /* Höhe eines 15-Min-Slots (Single Source of Truth) */
+  --hour-height: calc(var(--slot-height) * 4); /* 60px pro Stunde */
 }
 
 * { box-sizing: border-box; }
@@ -135,13 +136,21 @@ body {
 .tech-schedule {
   position: relative;
   width: 100%;
-  /* Min-Höhe für 24 Stunden * Slot Height */
-  height: calc(24 * 4 * var(--slot-height) / 4); /* 24h */
+  /* 96 × 15-Min-Slots = 24 Stunden */
+  height: calc(var(--slot-height) * 96);
 }
 
-/* Das Zeit-Raster */
+/* Task-Layer überlagert das Grid (absolute Positionierung der Tasks) */
+.task-layer {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; /* Nur Task-Blocks fangen Events */
+}
+.task-layer > * { pointer-events: auto; }
+
+/* Das Zeit-Raster: 1 Reihe = 1 Stunde */
 .time-row {
-  height: var(--slot-height); /* 1 Stunde */
+  height: var(--hour-height);
   border-bottom: 1px solid var(--grid-line);
   position: relative;
   display: flex;
