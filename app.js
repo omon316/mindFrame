@@ -27,7 +27,8 @@
         // Globale interact.js Konfiguration:
         // - 5px Bewegungstoleranz → Tipp/Klick zaehlt nicht als Drag
         if (window.interact) {
-            interact.pointerMoveTolerance(5);
+            // 8px Toleranz: Finger-Jitter beim Tippen zaehlt nicht als Drag
+            interact.pointerMoveTolerance(8);
         }
         renderHabits();
         renderBacklog();
@@ -176,10 +177,28 @@
     }
 
     // --- INTERACT.JS & GHOST PREVIEW ---
-    
+
+    // Scroll des Schedule-Wrappers waehrend Drag/Resize sperren,
+    // damit Touch-Gesten nicht versehentlich die Liste scrollen.
+    function lockScroll() {
+        const w = el('.schedule-wrapper');
+        if (w) {
+            w.dataset.scrollY = w.scrollTop;
+            w.style.overflowY = 'hidden';
+        }
+    }
+    function unlockScroll() {
+        const w = el('.schedule-wrapper');
+        if (w) {
+            w.style.overflowY = 'auto';
+            if (w.dataset.scrollY) w.scrollTop = parseInt(w.dataset.scrollY);
+        }
+    }
+
     function initInteract(element) {
         interact(element)
         .draggable({
+            autoScroll: false, // selbst scrollen verwirrt auf Touch nur
             modifiers: [
                 interact.modifiers.restrictRect({ containment: '#schedule-container' })
             ],
@@ -189,6 +208,7 @@
                     target.classList.add('dragging');
                     target.setAttribute('data-moved', 'false');
                     target.setAttribute('data-y', '0');
+                    lockScroll();
                     // Ghost anzeigen
                     const ghost = el('#drag-ghost');
                     ghost.style.top = target.style.top;
@@ -215,6 +235,7 @@
                 end(event) {
                     const target = event.target;
                     target.classList.remove('dragging');
+                    unlockScroll();
                     const ghost = el('#drag-ghost');
                     ghost.style.display = 'none';
 
@@ -241,16 +262,26 @@
         })
         .resizable({
             edges: { bottom: true, top: false, left: false, right: false },
-            margin: 8, // schmaler Resize-Hotspot, kollidiert weniger mit Drag
+            margin: 16,        // groesserer Hotspot fuer Finger
+            autoScroll: false, // gegen Wackel-Effekte
             listeners: {
                 start(event) {
                     event.target.setAttribute('data-resized', 'false');
+                    event.target.classList.add('dragging');
+                    lockScroll();
                 },
                 move(event) {
                     event.target.setAttribute('data-resized', 'true');
-                    event.target.style.height = event.rect.height + 'px';
+                    // Hoehe begrenzen: mind. 1 Slot, max bis Mitternacht
+                    const top = parseInt(event.target.style.top) || 0;
+                    const minH = SLOT_HEIGHT;
+                    const maxH = TOTAL_SLOTS * SLOT_HEIGHT - top;
+                    const h = Math.max(minH, Math.min(maxH, event.rect.height));
+                    event.target.style.height = h + 'px';
                 },
                 end(event) {
+                    event.target.classList.remove('dragging');
+                    unlockScroll();
                     const slots = Math.round(event.rect.height / SLOT_HEIGHT);
                     const t = tasks.find(x => x.id === event.target.dataset.id);
                     if(t) {
