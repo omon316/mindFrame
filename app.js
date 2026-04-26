@@ -6,10 +6,14 @@
     const SLOTS_PER_HOUR = 4;
     const TOTAL_HOURS = 24;
     const TOTAL_SLOTS = TOTAL_HOURS * SLOTS_PER_HOUR; // 96 Slots
-    // Slot-Höhe wird aus CSS (--slot-height) gelesen → eine Quelle der Wahrheit
-    const SLOT_HEIGHT = parseInt(
-        getComputedStyle(document.documentElement).getPropertyValue('--slot-height')
-    ) || 15;
+    // Slot-Höhe wird aus CSS (--slot-height) gelesen → eine Quelle der Wahrheit.
+    // let, weil sich der Wert je Breakpoint (Mobile/Desktop) aendern kann.
+    let SLOT_HEIGHT = readSlotHeight();
+    function readSlotHeight() {
+        return parseInt(
+            getComputedStyle(document.documentElement).getPropertyValue('--slot-height')
+        ) || 15;
+    }
 
     // --- STATE ---
     let tasks = [];
@@ -35,6 +39,17 @@
         renderTimeGrid(); // Baut das statische Grid
         renderSchedule(); // Platziert die Tasks
         updateMetrics();
+
+        // Bei Orientierungswechsel/Resize: Slot-Hoehe neu lesen + Schedule rendern,
+        // damit Tasks beim Wechsel Mobile <-> Desktop richtig positioniert bleiben.
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                SLOT_HEIGHT = readSlotHeight();
+                renderSchedule();
+            }, 150);
+        });
     }
 
     // --- NAVIGATION ---

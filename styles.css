@@ -258,3 +258,89 @@ body {
 .tech-dialog form { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
 .tech-dialog label { display: flex; flex-direction: column; gap: 5px; font-size: 11px; font-family: var(--font-mono); color: var(--text-muted); }
 .dialog-footer { display: flex; justify-content: flex-end; gap: 10px; }
+
+/* ============================================================
+   MOBILE / TABLET LAYOUT (< 900px)
+   - Sidebar wird zur Bottom-Nav
+   - Slots werden hoeher (24px / 96px pro Stunde) -> finger-tauglich
+   - Tasks nehmen mehr Breite ein (kleinere Time-Spalte)
+   ============================================================ */
+@media (max-width: 900px) {
+    :root {
+        --slot-height: 24px;   /* 96px / Stunde, gut fuer Finger */
+    }
+
+    body { flex-direction: column; height: 100dvh; }
+
+    /* Sidebar -> horizontale Bottom-Nav */
+    .sidebar {
+        width: 100%;
+        height: 56px;
+        flex-direction: row;
+        border-right: none;
+        border-top: 1px solid var(--border);
+        order: 2;
+    }
+    .brand, .sys-status { display: none; }
+    .nav-links {
+        display: flex; flex-direction: row;
+        margin: 0; padding: 0;
+        width: 100%; height: 100%;
+    }
+    .nav-links li, .nav-links li a {
+        flex: 1;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        gap: 2px;
+        padding: 6px 4px;
+        font-size: 11px;
+        border-left: none;
+        border-top: 2px solid transparent;
+        text-decoration: none;
+        color: var(--text-muted);
+    }
+    .nav-links li.active {
+        border-left-color: transparent;
+        border-top-color: var(--accent);
+        background: rgba(0, 188, 212, 0.05);
+    }
+    .nav-links .spacer { display: none; }
+    .nav-links .icon { width: auto; margin: 0; font-size: 16px; }
+
+    /* Main-Bereich rueckt nach oben */
+    .main-content { order: 1; flex: 1; min-height: 0; }
+    .view { padding: 12px; }
+
+    /* View-Header kompakter */
+    .view-header { padding-bottom: 8px; margin-bottom: 12px; }
+    .view-header h1 { font-size: 13px; }
+
+    /* Schedule: Bottom-Nav 56px + Header ~70px */
+    .schedule-wrapper { height: calc(100dvh - 56px - 80px); }
+    .time-label {
+        width: 44px;
+        font-size: 10px;
+        padding-left: 6px;
+    }
+    .task-block, .ghost-block {
+        left: 50px;
+        right: 6px;
+    }
+
+    /* Tabellen kompakter */
+    .tech-table th, .tech-table td {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    .input-bar { flex-wrap: wrap; }
+    .input-bar .tech-input { flex: 1 1 100%; }
+
+    /* Metrics einspaltig */
+    .metrics-grid { grid-template-columns: 1fr; gap: 12px; padding: 12px; }
+
+    /* Dialog full-width */
+    .tech-dialog {
+        width: calc(100vw - 24px);
+        max-width: 360px;
+    }
+}
