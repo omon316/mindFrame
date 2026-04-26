@@ -175,48 +175,73 @@ body {
 /* TASK BLOCKS */
 .task-block {
     position: absolute;
-    left: 70px; right: 10px; /* Neben der Zeitspalte */
+    left: 70px; right: 10px;
     background: rgba(0, 188, 212, 0.15);
     border: 1px solid var(--accent);
     color: var(--text-bright);
     font-size: 12px;
-    padding: 4px 8px 14px 8px; /* unten extra Platz fuer Resize-Griff */
     overflow: hidden;
     cursor: grab;
     z-index: 10;
     box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    /* Touch: Browser darf Touch nicht als Scroll abfangen, sonst kein Drag */
+    /* Touch: Browser darf Touch nicht als Scroll abfangen */
     touch-action: none;
-    -webkit-touch-callout: none;     /* iOS: kein System-Menue auf Long-Press */
+    -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
     user-select: none;
+    display: flex;
+    flex-direction: column;
+}
+.task-block-body {
+    flex: 1;
+    padding: 4px 8px;
+    min-height: 0;
+    overflow: hidden;
 }
 .task-block.dragging {
     cursor: grabbing;
     opacity: 0.7;
     box-shadow: 0 6px 20px rgba(0,188,212,.4);
 }
-/* Sichtbarer Resize-Griff am unteren Rand */
-.task-block::after {
+/* Dedizierter Resize-Griff: sichtbar + eigener Touch-Hotspot */
+.resize-handle {
+    height: 14px;
+    flex: 0 0 14px;
+    min-height: 8px;
+    background: linear-gradient(180deg, transparent, rgba(0,188,212,.3));
+    border-top: 1px solid rgba(0,188,212,.5);
+    cursor: ns-resize;
+    touch-action: none;
+    position: relative;
+}
+.resize-handle::before {
     content: '';
     position: absolute;
-    left: 50%;
-    bottom: 2px;
-    transform: translateX(-50%);
-    width: 32px;
-    height: 4px;
-    border-radius: 2px;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px; height: 3px;
     background: var(--accent);
-    opacity: 0.5;
-    pointer-events: none; /* interact.js handlet via margin */
+    border-radius: 2px;
+    opacity: .8;
 }
-.task-block.done::after { background: var(--success); }
 .task-block.done {
     border-color: var(--success);
     background: rgba(0, 255, 157, 0.1);
     color: var(--text-muted);
     text-decoration: line-through;
+}
+.task-block.done .resize-handle {
+    background: linear-gradient(180deg, transparent, rgba(0,255,157,.25));
+    border-top-color: rgba(0,255,157,.5);
+}
+.task-block.done .resize-handle::before { background: var(--success); }
+
+/* Auf Mobile: Resize-Griff nochmal hoeher, damit er sicher mit dem Finger
+   getroffen wird (mind. ~24px Touch-Target laut Apple/Material) */
+@media (max-width: 900px) {
+    .resize-handle { height: 22px; flex-basis: 22px; }
+    .resize-handle::before { width: 48px; height: 4px; }
 }
 
 /* GHOST PREVIEW */

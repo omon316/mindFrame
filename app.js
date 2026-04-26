@@ -117,13 +117,18 @@
         scheduledTasks.forEach(t => {
             const div = document.createElement('div');
             div.className = `task-block ${t.completed ? 'done' : ''}`;
-            div.innerText = t.title;
             div.dataset.id = t.id;
-            
+
+            // Inhalt + dedizierter Resize-Griff (eigenes Element = grosser Touch-Hotspot)
+            div.innerHTML = `
+                <div class="task-block-body">${escapeHtml(t.title)}</div>
+                <div class="resize-handle" aria-label="Groesse aendern"></div>
+            `;
+
             // Positioning absolute based on slots
             const topPos = t.startIndex * SLOT_HEIGHT;
             const height = t.durationSlots * SLOT_HEIGHT;
-            
+
             div.style.top = topPos + 'px';
             div.style.height = (height - 2) + 'px'; // -2 für Margin/Border
             
@@ -285,9 +290,10 @@
             }
         })
         .resizable({
-            edges: { bottom: true, top: false, left: false, right: false },
-            margin: 16,        // groesserer Hotspot fuer Finger
-            autoScroll: false, // gegen Wackel-Effekte
+            // Resize wird ueber dediziertes Handle-Element ausgeloest -> grosse,
+            // gut sichtbare Touch-Flaeche, keine Verwechslung mit Drag.
+            edges: { bottom: '.resize-handle', top: false, left: false, right: false },
+            autoScroll: false,
             listeners: {
                 start(event) {
                     event.target.setAttribute('data-resized', 'false');
