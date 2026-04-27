@@ -332,7 +332,7 @@
             listeners: {
                 start(event) {
                     event.target.setAttribute('data-resized', 'false');
-                    event.target.classList.add('dragging');
+                    event.target.classList.add('resizing');
                     lockScroll();
                 },
                 move(event) {
@@ -345,7 +345,7 @@
                     event.target.style.height = h + 'px';
                 },
                 end(event) {
-                    event.target.classList.remove('dragging');
+                    event.target.classList.remove('resizing');
                     unlockScroll();
                     const slots = Math.round(event.rect.height / SLOT_HEIGHT);
                     const t = tasks.find(x => x.id === event.target.dataset.id);
