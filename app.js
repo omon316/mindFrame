@@ -41,6 +41,16 @@
         renderSchedule(); // Platziert die Tasks
         updateMetrics();
 
+        // "Jetzt"-Linie: einmal positionieren + initial in den Sichtbereich scrollen,
+        // dann minuetlich aktualisieren.
+        updateNowLine();
+        scrollToNow();
+        setInterval(updateNowLine, 60 * 1000);
+        // Wenn der User in die Timeline wechselt: nochmal auf "jetzt" scrollen
+        els('.nav-links li[data-view="view-schedule"]').forEach(li => {
+            li.addEventListener('click', () => setTimeout(scrollToNow, 0));
+        });
+
         // Bei Orientierungswechsel/Resize: Slot-Hoehe neu lesen + Schedule rendern,
         // damit Tasks beim Wechsel Mobile <-> Desktop richtig positioniert bleiben.
         let resizeTimer;
@@ -49,6 +59,7 @@
             resizeTimer = setTimeout(() => {
                 SLOT_HEIGHT = readSlotHeight();
                 renderSchedule();
+                updateNowLine();
             }, 150);
         });
     }
@@ -92,7 +103,7 @@
     function renderTimeGrid() {
         const container = el('#time-grid');
         container.innerHTML = '';
-        
+
         // Generiere 24 Stunden Zeilen (Höhe wird via CSS --hour-height gesetzt)
         for(let h = 0; h < TOTAL_HOURS; h++) {
             const row = document.createElement('div');
@@ -107,6 +118,30 @@
         }
     }
 
+    // Aktuelle Zeit als horizontale Linie. Wird minuetlich aktualisiert.
+    function updateNowLine() {
+        const line = el('#now-line');
+        if(!line) return;
+        const now = new Date();
+        const minutesFromMidnight = now.getHours() * 60 + now.getMinutes();
+        // 1 Slot = 15 Minuten => Pixel = (Minuten / 15) * SLOT_HEIGHT
+        const y = (minutesFromMidnight / 15) * SLOT_HEIGHT;
+        line.style.top = y + 'px';
+        line.querySelector('.now-time').innerText =
+            `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    }
+
+    // Beim ersten Rendern auf "Jetzt" scrollen
+    function scrollToNow() {
+        const wrapper = el('.schedule-wrapper');
+        if(!wrapper) return;
+        const now = new Date();
+        const minutesFromMidnight = now.getHours() * 60 + now.getMinutes();
+        const y = (minutesFromMidnight / 15) * SLOT_HEIGHT;
+        // 2 Stunden vor Jetzt sichtbar machen
+        wrapper.scrollTop = Math.max(0, y - 2 * SLOT_HEIGHT * 4);
+    }
+
     function renderSchedule() {
         const layer = el('#task-layer');
         // Entferne alte Tasks (aber behalte nicht den Ghost, der ist im container parent)
@@ -116,7 +151,7 @@
 
         scheduledTasks.forEach(t => {
             const div = document.createElement('div');
-            div.className = `task-block ${t.completed ? 'done' : ''}`;
+            div.className = `task-block prio-${t.priority || 2} ${t.completed ? 'done' : ''}`;
             div.dataset.id = t.id;
 
             // Inhalt + dedizierter Resize-Griff (eigenes Element = grosser Touch-Hotspot)

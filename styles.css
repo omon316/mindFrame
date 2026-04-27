@@ -244,6 +244,38 @@ body {
     .resize-handle::before { width: 48px; height: 4px; }
 }
 
+/* PRIO-AKZENT (linker Streifen am Task-Block) */
+.task-block.prio-1 { border-left: 4px solid var(--danger); }
+.task-block.prio-2 { border-left: 4px solid var(--warn); }
+.task-block.prio-3 { border-left: 4px solid var(--accent); }
+.task-block.done.prio-1,
+.task-block.done.prio-2,
+.task-block.done.prio-3 { border-left-color: var(--success); }
+
+/* "JETZT"-LINIE */
+.now-line {
+    position: absolute;
+    left: 0; right: 0;
+    height: 0;
+    border-top: 2px solid var(--danger);
+    box-shadow: 0 0 8px rgba(255,51,51,.5);
+    z-index: 20; /* ueber Tasks */
+    pointer-events: none;
+}
+.now-line .now-time {
+    position: absolute;
+    left: 4px;
+    top: -10px;
+    background: var(--danger);
+    color: #000;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 3px;
+    letter-spacing: .5px;
+}
+
 /* GHOST PREVIEW */
 .ghost-block {
     display: none; /* Standardmäßig unsichtbar */
